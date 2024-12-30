@@ -1,12 +1,8 @@
 ﻿namespace TicTacToe
 
-type Player = | X | O
-type Square = Player option
-type Board = Square array array
+module Boards =
 
-module TicTacToe =
-
-    let emptyBoard : Board =
+    let empty : Board =
         Array.init 3 (fun _ ->
             Array.init 3 (fun _ ->
                 None))

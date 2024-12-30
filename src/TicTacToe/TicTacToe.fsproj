@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="TicTacToe.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="Board.fs" />
   </ItemGroup>
 
 </Project>
