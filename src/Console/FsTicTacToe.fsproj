@@ -7,11 +7,16 @@
 
   <ItemGroup>
     <Compile Include="Helper.fs" />
+    <Compile Include="GameLoop.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TicTacToe\TicTacToe.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.SystemTextJson" Version="1.3.13" />
   </ItemGroup>
 
 </Project>
