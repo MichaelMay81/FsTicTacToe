@@ -4,9 +4,8 @@ open System
 
 module GameLoop =
     
-    let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit=
+    let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
         let rec gameLoopRec (board:Board) =
-            printfn "%s" (board |> Boards.toString)
             Console.ReadLine().Split(' ')
             |> Array.map Int32.TryParse
             |> function

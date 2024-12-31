@@ -26,6 +26,15 @@ module Boards =
         JsonSerializer.Serialize (board, options)
         |> fun json -> File.WriteAllText (path, json)
 
-    let fromFile (path:string) : Board =
-        File.ReadAllText path
-        |> fun str -> JsonSerializer.Deserialize<Board> (str, options)
+    let fromFile (path:string) : Result<Board, string> =
+        try
+            File.ReadAllText path
+            |> Ok
+        with ex ->
+            Error (ex.Message)
+        |> Result.bind (fun str ->
+            try
+                JsonSerializer.Deserialize<Board> (str, options)
+                |> Ok
+            with ex ->
+                Error (ex.Message))
