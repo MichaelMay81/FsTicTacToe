@@ -18,7 +18,7 @@ module Boards =
             |> String.concat " | ")
         |> String.concat "\n"
 
-    let options =
+    let private options =
         JsonFSharpOptions.Default()
             .ToJsonSerializerOptions()
 

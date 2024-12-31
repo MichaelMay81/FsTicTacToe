@@ -6,10 +6,12 @@ module GameLoop =
     
     let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
         let rec gameLoopRec (board:Board) =
+            // get user input
             Console.ReadLine().Split(' ')
             |> Array.map Int32.TryParse
             |> function
             | [|true, x; true, y|] ->
+                // set square
                 Boards.setSquare x y board
                 |> function
                 | Error msg ->
@@ -18,8 +20,10 @@ module GameLoop =
                 | Ok newBoard ->
                     newBoard |> newBoardCallback
                     printfn "%s" (newBoard |> Boards.toString)
-                    let winner = Boards.calculateWinner newBoard
-                    match winner with
+                    
+                    // check for winner
+                    Boards.calculateWinner newBoard
+                    |> function
                     | Some player ->
                         printfn "Player %A wins!" player
                     | None ->

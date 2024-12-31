@@ -20,6 +20,7 @@ module Boards =
         | Some O, Some O, Some O -> Some O
         | _, _, _ -> None
 
+    /// Whoever has three in a row, column or diagonal wins.
     let calculateWinner (board:Board) : Player option =
             // lines
         [   ((0, 0), (0, 1), (0, 2)); ((1, 0), (1, 1), (1, 2)); ((2, 0), (2, 1), (2, 2))
@@ -32,6 +33,7 @@ module Boards =
         |> Seq.choose id
         |> Seq.tryHead
 
+    /// Whoever has the fewer squares on the board is the next player.
     let nextPlayer (board:Board) : Player =
         seq { for x in 0..2 do for y in 0..2 do board[x][y] }
         |> Seq.fold (fun (xCount,oCount) square ->
