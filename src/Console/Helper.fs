@@ -1,40 +1,38 @@
-namespace TicTacToe
+module FsTicTacToe.Boards
 
 open System.IO
 open System.Text.Json
 open System.Text.Json.Serialization
-
-module Boards =
     
-    let toString (board:Board) : string =
-        board
-        |> Seq.map (fun row ->
-            row
-            |> Seq.map (function
-                | Some X -> "X"
-                | Some O -> "O"
-                | None -> " "
-            )
-            |> String.concat " | ")
-        |> String.concat "\n"
+let toString (board:Board) : string =
+    board
+    |> Seq.map (fun row ->
+        row
+        |> Seq.map (function
+            | Some X -> "X"
+            | Some O -> "O"
+            | None -> " "
+        )
+        |> String.concat " | ")
+    |> String.concat "\n"
 
-    let private options =
-        JsonFSharpOptions.Default()
-            .ToJsonSerializerOptions()
+let private options =
+    JsonFSharpOptions.Default()
+        .ToJsonSerializerOptions()
 
-    let toFile (path:string) (board:Board) : unit =
-        JsonSerializer.Serialize (board, options)
-        |> fun json -> File.WriteAllText (path, json)
+let toFile (path:string) (board:Board) : unit =
+    JsonSerializer.Serialize (board, options)
+    |> fun json -> File.WriteAllText (path, json)
 
-    let fromFile (path:string) : Result<Board, string> =
+let fromFile (path:string) : Result<Board, string> =
+    try
+        File.ReadAllText path
+        |> Ok
+    with ex ->
+        Error (ex.Message)
+    |> Result.bind (fun str ->
         try
-            File.ReadAllText path
+            JsonSerializer.Deserialize<Board> (str, options)
             |> Ok
         with ex ->
-            Error (ex.Message)
-        |> Result.bind (fun str ->
-            try
-                JsonSerializer.Deserialize<Board> (str, options)
-                |> Ok
-            with ex ->
-                Error (ex.Message))
+            Error (ex.Message))

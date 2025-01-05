@@ -1,6 +1,6 @@
 module FsTicTacToe.WebApi.InMemoryMbp
 
-open TicTacToe
+open FsTicTacToe
 
 type Error = | Error of string
 

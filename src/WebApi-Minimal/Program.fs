@@ -1,5 +1,3 @@
-module FsTicTacToe.WebApi.Program
-
 // Implicitly ignore Warning shows up a lot, when using C# style function chaining.
 #nowarn "20"
 // Implicit conversion is used by TypedResults.
@@ -14,7 +12,8 @@ open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Http.Json
 open Microsoft.AspNetCore.Http.HttpResults
 open Scalar.AspNetCore
-open TicTacToe
+open FsTicTacToe
+open FsTicTacToe.WebApi
 
 type PostSqaureResult = Results<NoContent, InternalServerError<string>>
 let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message>) (x:int) (y:int) : PostSqaureResult =

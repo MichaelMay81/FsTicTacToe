@@ -1,4 +1,4 @@
-namespace TicTacToe
+namespace FsTicTacToe
 
 type Player = | X | O
 type Square = Player option

@@ -1,4 +1,4 @@
-﻿open TicTacToe
+﻿open FsTicTacToe
 open System.IO
 
 let helpText = "Usage: TicTacToe [-persistance <filePath>]"
