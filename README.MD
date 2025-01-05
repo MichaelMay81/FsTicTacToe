@@ -13,3 +13,7 @@ Simple console application to play Tic Tac Toe.
 Supports two modes:
 - In memory game.
 - Persistant game state loaded/safed from file.
+
+## Web Api - Minimal
+
+Web Api that servers a single game of Tic Tac Toe in a seperate thread via a MailboxProcessor.

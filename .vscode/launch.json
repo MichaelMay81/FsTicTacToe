@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "WebApi Minimal",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build WebApi",
+            "program": "${workspaceFolder}/src/WebApi-Minimal/bin/Debug/net9.0/FsTicTacToe-Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/WebApi-Minimal",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

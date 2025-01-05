@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build all",
+            "group": "build",
+            "type": "msbuild",
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "build WebApi",
+            "group": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/WebApi-Minimal/FsTicTacToe-Api.fsproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

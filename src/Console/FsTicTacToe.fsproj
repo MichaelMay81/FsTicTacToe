@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TicTacToe\TicTacToe.fsproj" />
+    <ProjectReference Include="..\TicTacToe\FsTicTacToe-Engine.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

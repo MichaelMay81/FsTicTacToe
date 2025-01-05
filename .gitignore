@@ -96,3 +96,4 @@ bin
 .history/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Rider,fsharp,VisualStudioCode
+.fake
