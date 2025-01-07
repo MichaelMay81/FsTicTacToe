@@ -6,7 +6,7 @@ type Error = | Error of string
 
 type Message =
 | GetBoard of AsyncReplyChannel<Board>
-| SetSquare of int * int * AsyncReplyChannel<Error option>
+| SetSquare of RowIndex * ColumnIndex * AsyncReplyChannel<Error option>
 
 let start () =
     MailboxProcessor<Message>.Start(fun inbox ->
@@ -18,11 +18,11 @@ let start () =
                     printfn "GetBoard"
                     replyChannel.Reply board
                     return! loop board
-                | SetSquare (x, y, replyChannel) ->
-                    printfn "SetSquare %d %d" x y
+                | SetSquare (row, column, replyChannel) ->
+                    printfn "SetSquare %O %O" row column
                     let newBoard =
                         board
-                        |> Boards.setSquare x y
+                        |> Boards.setSquare row column
                         |> function
                         | Ok newBoard ->
                             replyChannel.Reply None

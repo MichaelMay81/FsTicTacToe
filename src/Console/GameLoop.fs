@@ -1,16 +1,33 @@
 module FsTicTacToe.GameLoop
 
 open System
-    
+
+let private parseRowColumnIndex (str:string) : (ColumnIndex*RowIndex) option =
+    str.Split(' ')
+    |> function
+    | [| rowInt; columnInt |] ->
+        printfn $"column: {columnInt} rowInt: {rowInt}"
+        columnInt
+        |> Helpers.tryParseColumnIndex
+        |> Option.bind (fun columnIndex ->
+            rowInt
+            |> Helpers.tryParseRowIndex
+            |> Option.map(fun rowIndex ->
+                columnIndex, rowIndex))
+    | _ -> None
+
 let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
     let rec gameLoopRec (board:Board) =
         // get user input
-        Console.ReadLine().Split(' ')
-        |> Array.map Int32.TryParse
+        Console.ReadLine()
+        |> parseRowColumnIndex
         |> function
-        | [|true, x; true, y|] ->
+        | Some value -> Ok value 
+        | None -> Error "Please, just insert two numbers separated by a space."
+        |> function
+        | Ok (columnIndex, rowIndex) ->
             // set square
-            Boards.setSquare x y board
+            Boards.setSquare rowIndex columnIndex  board
             |> function
             | Error msg ->
                 printfn "%s" msg
@@ -26,8 +43,8 @@ let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
                     printfn "Player %A wins!" player
                 | None ->
                     gameLoopRec newBoard
-        | _ ->
-            printfn "Please, just insert two numbers separated by a space."
+        | Error error ->
+            printfn "%s" error
             gameLoopRec board
 
     gameBoard

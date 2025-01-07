@@ -16,9 +16,9 @@ open FsTicTacToe
 open FsTicTacToe.WebApi
 
 type PostSqaureResult = Results<NoContent, InternalServerError<string>>
-let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message>) (x:int) (y:int) : PostSqaureResult =
+let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message>) (row:int) (column:int) : PostSqaureResult =
     inMemoeryMbp.PostAndReply (fun replyChannel ->
-        InMemoryMbp.SetSquare (x, y, replyChannel))
+        InMemoryMbp.SetSquare (R1, C1, replyChannel))
     |> function
     | None ->
         TypedResults.NoContent()
@@ -31,12 +31,13 @@ let main args =
     let inMemoeryMbp = InMemoryMbp.start ()
 
     let builder = WebApplication.CreateBuilder(args)
-    // Add F# type serializabitlity.
+    // Add F# unions serializabitlity.
+    // Most F# types are supported out of the box.
+    // This doesn't add the right API schema though...
     builder.Services.Configure(fun (options:JsonOptions) ->
-        JsonFSharpOptions.Default()
-                .AddToJsonSerializerOptions(options.SerializerOptions))
-    // Add OpenApi.
-    builder.Services.AddOpenApi ()
+        JsonFSharpOptions(types=JsonFSharpTypes.Unions)
+            .AddToJsonSerializerOptions(options.SerializerOptions))
+    builder.Services.AddOpenApi()
 
     let app = builder.Build()
 

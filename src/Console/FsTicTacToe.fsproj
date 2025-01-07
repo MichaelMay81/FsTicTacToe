@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Helper.fs" />
+    <Compile Include="Helpers/Helpers.fs" />
+    <Compile Include="Helpers/BoardHelpers.fs" />
     <Compile Include="GameLoop.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

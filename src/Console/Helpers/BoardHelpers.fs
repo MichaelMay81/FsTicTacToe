@@ -3,18 +3,23 @@ module FsTicTacToe.Boards
 open System.IO
 open System.Text.Json
 open System.Text.Json.Serialization
-    
+
+let private squareToString = function
+    | Some X -> "X"
+    | Some O -> "O"
+    | None -> " "
+
+let private rowToString (delimiter:string) (row:Row) : string =
+    squareToString row.Square1 + delimiter +
+    squareToString row.Square2 + delimiter +
+    squareToString row.Square3 + delimiter
+
 let toString (board:Board) : string =
-    board
-    |> Seq.map (fun row ->
-        row
-        |> Seq.map (function
-            | Some X -> "X"
-            | Some O -> "O"
-            | None -> " "
-        )
-        |> String.concat " | ")
-    |> String.concat "\n"
+    let rowDelimiter = " | "
+    let lineDelimiter = "\n"
+    rowToString rowDelimiter board.Row1 + lineDelimiter +
+    rowToString rowDelimiter board.Row2 + lineDelimiter +
+    rowToString rowDelimiter board.Row3 + lineDelimiter
 
 let private options =
     JsonFSharpOptions.Default()
