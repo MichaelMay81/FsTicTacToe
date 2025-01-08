@@ -29,7 +29,7 @@ let main (args: string array) : int =
     | Some path ->
         Boards.fromFile path
         |> function
-            | Error msg ->
+            | Result.Error msg ->
                 printfn "Error loading Board state: %s" msg
                 printfn "Starting new game..."
                 Boards.empty

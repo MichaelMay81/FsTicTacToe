@@ -63,9 +63,10 @@ let nextPlayer (board:Board) : Player =
         if xCount > oCount then O
         else X
 
-let setSquare (row:RowIndex) (column:ColumnIndex) (board:Board) : Result<Board, string> =
+let setSquare (row:RowIndex) (column:ColumnIndex) (board:Board) : Result<Board, Error> =
     if selectSquare board row column <> None then
-        Error $"Square {row}/{column} already taken"
+        $"Square {row}/{column} already taken"
+        |> Error |> Result.Error
     else
         let nextPlayer = nextPlayer board
         

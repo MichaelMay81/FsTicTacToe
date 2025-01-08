@@ -34,10 +34,10 @@ let fromFile (path:string) : Result<Board, string> =
         File.ReadAllText path
         |> Ok
     with ex ->
-        Error (ex.Message)
+        Result.Error (ex.Message)
     |> Result.bind (fun str ->
         try
             JsonSerializer.Deserialize<Board> (str, options)
             |> Ok
         with ex ->
-            Error (ex.Message))
+            Result.Error (ex.Message))

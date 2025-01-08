@@ -23,13 +23,13 @@ let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
         |> parseRowColumnIndex
         |> function
         | Some value -> Ok value 
-        | None -> Error "Please, just insert two numbers separated by a space."
+        | None -> Result.Error "Please, just insert two numbers separated by a space."
         |> function
         | Ok (columnIndex, rowIndex) ->
             // set square
             Boards.setSquare rowIndex columnIndex  board
             |> function
-            | Error msg ->
+            | Result.Error (Error msg) ->
                 printfn "%s" msg
                 gameLoopRec board
             | Ok newBoard ->
@@ -43,7 +43,7 @@ let gameLoop (newBoardCallback: Board -> unit) (gameBoard:Board) : unit =
                     printfn "Player %A wins!" player
                 | None ->
                     gameLoopRec newBoard
-        | Error error ->
+        | Result.Error error ->
             printfn "%s" error
             gameLoopRec board
 

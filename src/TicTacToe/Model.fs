@@ -14,3 +14,5 @@ type Board = {
 
 type RowIndex = | R1 | R2 | R3
 type ColumnIndex = | C1 | C2 | C3
+
+type Error = | Error of string
