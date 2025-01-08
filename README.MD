@@ -16,4 +16,4 @@ Supports two modes:
 
 ## Web Api - Minimal
 
-Web Api that servers a single game of Tic Tac Toe in a seperate thread via a MailboxProcessor.
+Web Api that servers a single game of Tic Tac Toe in a seperate thread via a MailboxProcessor. Supports serialization of all types and OpenApi Schmea (except for discriminated unions).
