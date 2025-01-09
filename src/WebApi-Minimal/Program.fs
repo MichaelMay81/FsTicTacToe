@@ -15,19 +15,24 @@ open Scalar.AspNetCore
 open FsTicTacToe
 open FsTicTacToe.WebApi
 
-type PostSqaureResult = Results<NoContent, InternalServerError<string>>
+type PostSqaureResult = Results<NoContent, Ok<string>, InternalServerError<string>>
 
 let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message<string>>) (id:string) (row:int) (column:int) : PostSqaureResult =
     Helpers.parseIndex row column
     |> function
-    | Result.Error error -> Some error
+    | Result.Error error -> Result.Error error
     | Result.Ok (rowIndex, columnIndex) ->
         inMemoeryMbp.PostAndReply (fun replyChannel ->
             InMemoryMbp.SetSquare (id, rowIndex, columnIndex, replyChannel))
     |> function
-    | None ->
+    | Result.Ok None ->
         TypedResults.NoContent()
-    | Some (Error error) ->
+    | Result.Ok (Some player) ->
+        player
+        |> function
+        | X -> TypedResults.Ok<string> "X"
+        | O -> TypedResults.Ok<string> "O"
+    | Result.Error (Error error) ->
         TypedResults.InternalServerError<string>(error)
     
 [<EntryPoint>]

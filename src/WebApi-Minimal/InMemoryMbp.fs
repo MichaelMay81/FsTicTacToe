@@ -5,7 +5,7 @@ open FsTicTacToe
 type Message<'BoardId when 'BoardId : comparison> =
 | GetBoards of AsyncReplyChannel<Map<'BoardId, Board>>
 | GetBoard of 'BoardId * AsyncReplyChannel<Result<Board, Error>>
-| SetSquare of 'BoardId * RowIndex * ColumnIndex * AsyncReplyChannel<Error option>
+| SetSquare of 'BoardId * RowIndex * ColumnIndex * AsyncReplyChannel<Result<Player option, Error>>
 
 let private tryGetBoard boardId boards =
     boards
@@ -15,6 +15,18 @@ let private tryGetBoard boardId boards =
         Ok board
     | None ->
         Result.Error (Error $" Error: Board {boardId} not found")
+
+let private newBoardIfWon board =
+    board
+    |> Boards.calculateWinner
+    |> function
+    | Some _ ->
+        printfn "Board won, creating new one."
+        Boards.empty
+    | None -> board
+
+let private checkForWinner board =
+    Boards.calculateWinner board
 
 let private processMessage boards message =
     match message with
@@ -36,14 +48,16 @@ let private processMessage boards message =
             |> Result.defaultWith (fun _ ->
                 printfn $"Board not found, creating new one {boardId}"
                 Boards.empty)
+            |> newBoardIfWon
             |> Boards.setSquare row column
+            |> Result.map (fun newBoard -> newBoard, Boards.calculateWinner newBoard)
             |> function
-            | Ok newBoard ->
-                replyChannel.Reply None
+            | Ok (newBoard, winner) ->
+                replyChannel.Reply (Ok winner)
                 boards
                 |> Map.add boardId newBoard
             | Result.Error message ->
-                replyChannel.Reply (Some message)
+                replyChannel.Reply (Result.Error message)
                 boards
         newBoards
 
