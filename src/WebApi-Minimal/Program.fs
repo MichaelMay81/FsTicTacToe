@@ -14,6 +14,7 @@ open Microsoft.AspNetCore.Http.HttpResults
 open Scalar.AspNetCore
 open FsTicTacToe
 open FsTicTacToe.WebApi
+open FsTicTacToe.WebApi.Helpers
 
 type PostSqaureResult = Results<NoContent, Ok<string>, InternalServerError<string>>
 
@@ -65,10 +66,11 @@ let main args =
         .WithTags("Board")
         .WithName("GetBoard")
 
-    app.MapPost("/", Func<int, int, PostSqaureResult>
-            (postSquare inMemoeryMbp "96adcda5-8aa7-43db-a251-4b1aeec1b5c5"))
+    app.MapGet("/", Func<HttpContext, int, int, PostSqaureResult>(fun httpContext row column ->
+            let coockie = getOrSetSessionCoockie "FsTicTacToeSession" (TimeSpan.FromMinutes 5.) httpContext.Request httpContext.Response
+            postSquare inMemoeryMbp coockie row column))
         .WithTags("Square")
         .WithName("PostSquare")
-        
+
     app.Run()
     0
