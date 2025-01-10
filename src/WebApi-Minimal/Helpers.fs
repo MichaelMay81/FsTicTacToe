@@ -15,24 +15,26 @@ let parseIndex (row:int) (column:int) : Result<RowIndex*ColumnIndex, Error> =
     | None -> "Values for row and column must be values of 1-3." |> Error |> Result.Error
     | Some values -> Result.Ok values
 
+let private toOption =
+    function
+    | true, value -> Some value
+    | false, _ -> None
+
 let getOrSetSessionCoockie
     (cookieKey:string)
     (cookieExpires:TimeSpan)
     (request:HttpRequest)
     (response:HttpResponse)
-    : string =
+    : Guid =
     
     request.Cookies.TryGetValue cookieKey
-    |> function
-    | true, value ->
-        // printfn "Cookie %s found: %s" cookieKey value
-        value
-    | false, _ ->
-        let value = Guid.NewGuid().ToString()
-        // printfn "Cookie %s set to %s" cookieKey value
+    |> toOption
+    |> Option.bind (Guid.TryParse >> toOption) 
+    |> Option.defaultWith (fun _ ->
+        let value = Guid.NewGuid()
         let options = CookieOptions()
         options.HttpOnly <- true
         options.Secure <- request.IsHttps
         options.Expires <- DateTimeOffset.UtcNow.Add(cookieExpires)
-        response.Cookies.Append(cookieKey, value, options)
-        value
+        response.Cookies.Append(cookieKey, value.ToString(), options)
+        value )

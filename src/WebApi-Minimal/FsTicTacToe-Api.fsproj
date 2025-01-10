@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Include="Helpers.fs" />
-    <Compile Include="InMemoryMbp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

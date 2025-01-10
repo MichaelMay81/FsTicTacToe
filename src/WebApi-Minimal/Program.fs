@@ -18,13 +18,13 @@ open FsTicTacToe.WebApi.Helpers
 
 type PostSqaureResult = Results<NoContent, Ok<string>, InternalServerError<string>>
 
-let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message<string>>) (id:string) (row:int) (column:int) : PostSqaureResult =
+let postSquare (inMemoeryMbp:MailboxProcessor<Games.Message<Guid>>) (id:Guid) (row:int) (column:int) : PostSqaureResult =
     Helpers.parseIndex row column
     |> function
     | Result.Error error -> Result.Error error
     | Result.Ok (rowIndex, columnIndex) ->
         inMemoeryMbp.PostAndReply (fun replyChannel ->
-            InMemoryMbp.SetSquare (id, rowIndex, columnIndex, replyChannel))
+            Games.SetSquare (id, rowIndex, columnIndex, replyChannel))
     |> function
     | Result.Ok None ->
         TypedResults.NoContent()
@@ -39,7 +39,7 @@ let postSquare (inMemoeryMbp:MailboxProcessor<InMemoryMbp.Message<string>>) (id:
 [<EntryPoint>]
 let main args =
     // start game thread
-    let inMemoeryMbp = InMemoryMbp.start ()
+    let games = Games.start ()
 
     let builder = WebApplication.CreateBuilder(args)
     // Add F# unions serializabitlity.
@@ -61,14 +61,14 @@ let main args =
 
     app.UseHttpsRedirection()
 
-    app.MapGet("/boards", Func<Map<string,Board>>(fun _ ->
-            inMemoeryMbp.PostAndReply InMemoryMbp.GetBoards))
+    app.MapGet("/boards", Func<Map<Guid,Board>>(fun _ ->
+            games.PostAndReply Games.GetBoards))
         .WithTags("Board")
         .WithName("GetBoard")
 
     app.MapGet("/", Func<HttpContext, int, int, PostSqaureResult>(fun httpContext row column ->
             let coockie = getOrSetSessionCoockie "FsTicTacToeSession" (TimeSpan.FromMinutes 5.) httpContext.Request httpContext.Response
-            postSquare inMemoeryMbp coockie row column))
+            postSquare games coockie row column))
         .WithTags("Square")
         .WithName("PostSquare")
 

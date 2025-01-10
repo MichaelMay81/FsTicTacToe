@@ -1,4 +1,4 @@
-module FsTicTacToe.WebApi.InMemoryMbp
+module FsTicTacToe.Games
 
 open FsTicTacToe
 
@@ -24,9 +24,6 @@ let private newBoardIfWon board =
         printfn "Board won, creating new one."
         Boards.empty
     | None -> board
-
-let private checkForWinner board =
-    Boards.calculateWinner board
 
 let private processMessage boards message =
     match message with
