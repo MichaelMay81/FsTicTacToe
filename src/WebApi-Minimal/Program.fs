@@ -35,21 +35,19 @@ let postSquare (inMemoeryMbp:MailboxProcessor<Games.Message<Guid>>) (id:Guid) (r
     | Result.Error (Error error) ->
         TypedResults.InternalServerError<string>(error)
     
-[<EntryPoint>]
-let main args =
-    // start game thread
-    let games = Games.start ()
-
-    let builder = WebApplication.CreateBuilder(args)
+let configureServices (services : IServiceCollection) =
     // Add F# unions serializabitlity.
     // Most F# types are supported out of the box.
     // This doesn't add the right API schema though...
-    builder.Services.Configure(fun (options:JsonOptions) ->
+    services.Configure(fun (options:JsonOptions) ->
         JsonFSharpOptions(types=JsonFSharpTypes.Unions)
             .AddToJsonSerializerOptions(options.SerializerOptions))
-    builder.Services.AddOpenApi()
 
-    let app = builder.Build()
+    services.AddOpenApi()
+
+let configureApp (app : WebApplication) =
+    // start game thread
+    let games = Games.start ()
 
     if app.Environment.IsDevelopment() then
         // OpenApi endpoint.
@@ -60,16 +58,26 @@ let main args =
 
     app.UseHttpsRedirection()
 
+    app.Map("/", Func<string> (fun _ -> "FsTicTacToe"))
+
     app.MapGet("/boards", Func<Map<Guid,Board>>(fun _ ->
             games.PostAndReply Games.GetBoards))
         .WithTags("Board")
         .WithName("GetBoard")
 
-    app.MapGet("/", Func<HttpContext, int, int, PostSqaureResult>(fun httpContext row column ->
+    app.MapGet("/square", Func<HttpContext, int, int, PostSqaureResult>(fun httpContext row column ->
             let coockie = Helpers.getOrSetSessionCoockie "FsTicTacToeSession" (TimeSpan.FromMinutes 5.) httpContext.Request httpContext.Response
             postSquare games coockie row column))
         .WithTags("Square")
         .WithName("PostSquare")
 
+[<EntryPoint>]
+let main args =
+    let builder = WebApplication.CreateBuilder(args)
+    builder.Services |> configureServices
+
+    let app = builder.Build()
+    app |> configureApp
     app.Run()
+
     0

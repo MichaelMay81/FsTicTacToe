@@ -1,7 +1,6 @@
 open System
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
-open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Giraffe
 open FsTicTacToe
@@ -35,9 +34,21 @@ let notFoundHandler : HttpHandler =
     setHttpHeader "X-CustomHeader" "Some value"
     >=> RequestErrors.NOT_FOUND "Not Found"
 
+let configureServices (services : IServiceCollection) =
+    // Add Giraffe dependencies
+    services.AddGiraffe() |> ignore
+        
+    // services.AddSingleton<Json.ISerializer>(
+        // SystemTextJson.Serializer(
+        //     JsonFSharpOptions.Default()
+        //         .ToJsonSerializerOptions())) |> ignore
+    // services.Configure(fun (options:JsonOptions) ->
+    //     JsonFSharpOptions() //types=JsonFSharpTypes.Unions)
+    //         .AddToJsonSerializerOptions(options.SerializerOptions)) |> ignore
+    
 let configureApp (app : IApplicationBuilder) =
-    let games: MailboxProcessor<Games.Message<Guid>> =
-        Games.start ()
+    // start game thread
+    let games = Games.start ()
 
     let webApp =
         choose [
@@ -59,28 +70,14 @@ let configureApp (app : IApplicationBuilder) =
     // Add Giraffe to the ASP.NET Core pipeline
     app.UseGiraffe webApp
 
-let configureServices (services : IServiceCollection) =
-    // Add Giraffe dependencies
-    services.AddGiraffe() |> ignore
-        
-    // services.AddSingleton<Json.ISerializer>(
-        // SystemTextJson.Serializer(
-        //     JsonFSharpOptions.Default()
-        //         .ToJsonSerializerOptions())) |> ignore
-    // services.Configure(fun (options:JsonOptions) ->
-    //     JsonFSharpOptions() //types=JsonFSharpTypes.Unions)
-    //         .AddToJsonSerializerOptions(options.SerializerOptions)) |> ignore
-    
-
 [<EntryPoint>]
-let main _ =
-    Host.CreateDefaultBuilder()
-        .ConfigureWebHostDefaults(
-            fun webHostBuilder ->
-                webHostBuilder
-                    .Configure(configureApp)
-                    .ConfigureServices(configureServices)
-                    |> ignore)
-        .Build()
-        .Run()
+let main args =
+    let builder = WebApplication.CreateBuilder(args)
+    configureServices builder.Services
+    
+    let app = builder.Build()
+    configureApp app
+
+    app.UseHttpsRedirection() |> ignore
+    app.Run()
     0
