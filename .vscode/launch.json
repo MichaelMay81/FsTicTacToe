@@ -5,10 +5,21 @@
             "name": "WebApi Minimal",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build WebApi",
+            "preLaunchTask": "build WebApi-Minimal",
             "program": "${workspaceFolder}/src/WebApi-Minimal/bin/Debug/net9.0/FsTicTacToe-Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/WebApi-Minimal",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": "WebApi Giraffe",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build WebApi-Giraffe",
+            "program": "${workspaceFolder}/src/WebApi-Giraffe/bin/Debug/net9.0/FsTicTacToe-Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/WebApi-Giraffe",
             "stopAtEntry": false,
             "console": "internalConsole"
         }

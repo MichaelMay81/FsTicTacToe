@@ -10,13 +10,24 @@
             ]
         },
         {
-            "label": "build WebApi",
+            "label": "build WebApi-Minimal",
             "group": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
                 "${workspaceFolder}/src/WebApi-Minimal/FsTicTacToe-Api.fsproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build WebApi-Giraffe",
+            "group": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/WebApi-Giraffe/FsTicTacToe-Api.fsproj"
             ],
             "problemMatcher": "$msCompile"
         }

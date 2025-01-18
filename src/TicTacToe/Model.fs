@@ -2,11 +2,14 @@ namespace FsTicTacToe
 
 type Player = | X | O
 
+[<CLIMutable>]
 type Square = Player option
+[<CLIMutable>]
 type Row = {
     Square1: Square
     Square2: Square
     Square3: Square }
+[<CLIMutable>]
 type Board = {
     Row1: Row
     Row2: Row
